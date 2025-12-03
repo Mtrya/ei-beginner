@@ -1,0 +1,11 @@
+[project]
+name = "ei-beginner"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "gymnasium[all]>=1.2.2",
+    "numpy>=2.3.5",
+    "pybullet>=3.2.7",
+]
