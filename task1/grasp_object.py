@@ -103,7 +103,7 @@ def calculate_ik_with_constraints(robot_id, target_pos, target_orn, rest_poses=N
     return joint_poses[:7]
 
 def move_to_position(robot_id, target_pos, target_orn, rest_poses=None, verbose=True,
-    max_velocity=None, use_trajectory=False, num_waypoints=5):
+    max_velocity=5, use_trajectory=False, num_waypoints=5):
     """移动到指定位置
     最大速度与轨迹规划都是为了解决夹爪移动过快将物体甩飞的问题
     """
@@ -140,7 +140,7 @@ def pick_and_place(
     lift_height=0.5,
     use_gui=True,
     verbose=True,
-    max_velocity=0.5,
+    max_velocity=3,
     use_trajectory=True,
     num_waypoints=5
 ):
@@ -211,7 +211,7 @@ def pick_and_place(
         print("=" * 50)
     pre_grasp_pos = [stable_cube_pos[0], stable_cube_pos[1], stable_cube_pos[2] + pre_grasp_height]
     pre_grasp_orn = p.getQuaternionFromEuler([0, np.pi, 0])
-    move_to_position(robotId, pre_grasp_pos, pre_grasp_orn, verbose=verbose, max_velocity=max_velocity, use_trajectory=use_trajectory, num_waypoints=num_waypoints)
+    move_to_position(robotId, pre_grasp_pos, pre_grasp_orn, verbose=verbose)
 
     # Step5: 向下移动到物体位置
     if verbose:
@@ -220,7 +220,7 @@ def pick_and_place(
         print("=" * 50)
     grasp_pos = [stable_cube_pos[0], stable_cube_pos[1], stable_cube_pos[2]]
     grasp_orn = p.getQuaternionFromEuler([0, np.pi, 0])
-    move_to_position(robotId, grasp_pos, grasp_orn, verbose=verbose, max_velocity=max_velocity, use_trajectory=use_trajectory, num_waypoints=num_waypoints)
+    move_to_position(robotId, grasp_pos, grasp_orn, verbose=verbose)
 
     # Step6: 闭合夹爪
     if verbose:
@@ -252,6 +252,11 @@ def pick_and_place(
     target_orn = p.getQuaternionFromEuler([0, np.pi, 0])
     move_to_position(robotId, target_pos, target_orn, verbose=verbose, max_velocity=max_velocity, use_trajectory=use_trajectory, num_waypoints=num_waypoints)
 
+    # 短暂停留
+    for _ in range(50):
+        p.stepSimulation()
+        time.sleep(0.01)
+    
     # Step9: 打开夹爪释放物体
     if verbose:
         print("\n" + "=" * 50)
@@ -262,7 +267,7 @@ def pick_and_place(
     wait_for_reach(robotId, gripper_fingers, gripper_open)
 
     # 短暂停留
-    for _ in range(100):
+    for _ in range(50):
         p.stepSimulation()
         time.sleep(0.01)
 
