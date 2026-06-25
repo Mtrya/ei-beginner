@@ -10,5 +10,9 @@ wheels/
 .venv
 
 # Dataset
-task3/data/
-task3/references/
+data
+vendor
+
+# Pdfs and txts
+*.pdf
+*.txt
