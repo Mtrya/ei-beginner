@@ -9,6 +9,10 @@ wheels/
 # Virtual environments
 .venv
 
+# Local platform context
+INSPIRE.md
+.inspire/
+
 # Dataset
 data
 vendor
